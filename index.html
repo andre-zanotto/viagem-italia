@@ -39,24 +39,20 @@
 
         <!-- Página Mapa -->
         <section id="pagina-mapa" class="page">
-            <!-- A caixa de informações agora fica no topo -->
-            <div id="info-box" class="info-box">
-                <div class="info-box-header">
-                    <h3 id="info-title">Ponto de Interesse</h3>
-                    <button id="close-info-box"><i class="fas fa-times"></i></button>
-                </div>
-                <div id="info-content-wrapper">
-                    <div id="info-loader" class="loader"></div>
-                    <div id="info-content"></div>
-                </div>
-            </div>
-            <div id="map"></div>
+            <!-- O Iframe do My Maps foi inserido aqui -->
+            <iframe 
+                src="https://www.google.com/maps/d/embed?mid=1nPZMLKZ6pgXrh8J6WW205Qg785ICMOw&ehbc=2E312F&noprof=1" 
+                width="100%" 
+                height="100%" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy">
+            </iframe>
         </section>
     </main>
     
     <!-- Scripts -->
     <script src="script.js"></script>
-    <!-- IMPORTANTE: Substitua SUA_CHAVE_DE_API_AQUI pela sua chave real do Google Cloud -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_2WiI6H99Y5irc4eqzhkIm6P2xbHlAkQ&callback=initMap&libraries=places,routes,marker"></script>
+    <!-- A chamada da API do Google Maps foi removida daqui -->
 </body>
 </html>

@@ -780,13 +780,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DA PÁGINA MAPA ---
+    // A função initMap é chamada pelo script da API do Google Maps quando ele carrega
     window.initMap = () => {
-        // **CORREÇÃO 3: Simplificação da chamada da API e Estilo do Mapa**
         const map = new google.maps.Map(document.getElementById("map"), {
             center: { lat: 41.9027835, lng: 12.4963655 }, // Roma
             zoom: 6,
-            // O mapId foi removido. O estilo é aplicado diretamente.
-            styles: [
+            styles: [ // Estilo sóbrio/elegante para o mapa
                 { "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }] },
                 { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
                 { "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] },
@@ -844,13 +843,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     map: map,
                     title: ponto.nome,
                     icon: {
-                        path: isStartPoint ? 'M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z' : google.maps.SymbolPath.CIRCLE, // Ícone de bandeira para início
+                        path: isStartPoint ? 'M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z' : google.maps.SymbolPath.CIRCLE,
                         fillColor: isStartPoint ? '#000000' : currentColor,
                         fillOpacity: 1,
                         strokeColor: '#fff',
                         strokeWeight: 2,
-                        scale: isStartPoint ? 8 : 6,
-                        anchor: new google.maps.Point(12, 24)
+                        scale: isStartPoint ? 8 : 7,
+                        anchor: isStartPoint ? new google.maps.Point(12, 24) : new google.maps.Point(0, 0),
                     }
                 });
 

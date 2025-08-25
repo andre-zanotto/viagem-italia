@@ -216,11 +216,10 @@ td a:hover {
     color: var(--primary-color);
 }
 
-/* Correção da tabela na lista */
 .table-container-lista {
     margin-top: 20px;
-    overflow-x: auto; /* Permite rolagem horizontal */
-    -webkit-overflow-scrolling: touch; /* Melhora a rolagem em iOS */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 .table-container-lista table {
     box-shadow: none;
@@ -229,101 +228,13 @@ td a:hover {
 
 /* --- Página Mapa --- */
 #pagina-mapa {
-    padding: 0;
-    position: relative;
-    overflow: hidden; /* Garante que a info-box não cause scroll */
+    padding: 0; /* Remove o padding para o iframe preencher tudo */
+    overflow: hidden; /* Garante que o iframe não crie barras de rolagem extras */
 }
 
-#map {
+/* O iframe preencherá o container #pagina-mapa */
+#pagina-mapa iframe {
+    width: 100%;
     height: 100%;
-    width: 100%;
-}
-
-.info-box {
-    position: absolute;
-    top: -100%; /* Começa escondido acima da tela */
-    left: 0;
-    width: 100%;
-    height: 20vh; /* Altura de 20% da tela */
-    background-color: var(--white-color);
-    box-shadow: var(--shadow);
-    transition: top 0.4s ease-in-out;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-}
-
-.info-box.show {
-    top: 0; /* Desliza para o topo da página do mapa */
-}
-
-.info-box-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    border-bottom: 1px solid var(--secondary-color);
-    background-color: #f8f9fa;
-}
-
-#info-title {
-    font-family: var(--primary-font);
-    font-size: 1rem;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-right: 10px;
-}
-
-#close-info-box {
-    background: transparent;
     border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: var(--light-gray);
-    transition: color 0.2s;
-}
-#close-info-box:hover {
-    color: var(--primary-color);
-}
-
-#info-content-wrapper {
-    padding: 15px;
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-#info-content {
-    font-size: 0.85rem;
-    line-height: 1.6;
-}
-#info-content ul {
-    list-style-type: none;
-    padding: 0;
-}
-#info-content a {
-    color: var(--accent-color);
-    font-weight: 700;
-    text-decoration: none;
-}
-#info-content a:hover {
-    text-decoration: underline;
-}
-
-/* Loader para a info-box */
-.loader {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--accent-color);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-    display: none; /* Escondido por padrão */
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
