@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guia de Viagem - Itália</title>
+    <!-- Fontes do Google e Ícones Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
+    <!-- Cabeçalho de Navegação Fixo -->
     <header>
         <nav>
-            <button id="btn-tabela" class="nav-btn active"><i class="fas fa-table"></i> TABELA</button>
-            <button id="btn-lista" class="nav-btn"><i class="fas fa-list-ul"></i> LISTA</button>
-            <button id="btn-mapa" class="nav-btn"><i class="fas fa-map-marked-alt"></i> MAPA</button>
+            <button id="btn-tabela" class="nav-btn active"><i class="fas fa-table-list"></i> TABELA</button>
+            <button id="btn-lista" class="nav-btn"><i class="fas fa-scroll"></i> LISTA</button>
+            <button id="btn-mapa" class="nav-btn"><i class="fas fa-map-location-dot"></i> MAPA</button>
         </nav>
     </header>
 
@@ -34,16 +39,24 @@
 
         <!-- Página Mapa -->
         <section id="pagina-mapa" class="page">
-            <div id="map"></div>
+            <!-- A caixa de informações agora fica no topo -->
             <div id="info-box" class="info-box">
-                <button id="close-info-box"><i class="fas fa-times"></i></button>
-                <h3 id="info-title"></h3>
-                <p id="info-content"></p>
+                <div class="info-box-header">
+                    <h3 id="info-title">Ponto de Interesse</h3>
+                    <button id="close-info-box"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="info-content-wrapper">
+                    <div id="info-loader" class="loader"></div>
+                    <div id="info-content"></div>
+                </div>
             </div>
+            <div id="map"></div>
         </section>
     </main>
     
+    <!-- Scripts -->
     <script src="script.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_2WiI6H99Y5irc4eqzhkIm6P2xbHlAkQ&callback=initMap&libraries=places,routes"></script>
+    <!-- IMPORTANTE: Substitua SUA_CHAVE_DE_API_AQUI pela sua chave real do Google Cloud -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_DE_API_AQUI&callback=initMap&libraries=places,routes,marker"></script>
 </body>
 </html>

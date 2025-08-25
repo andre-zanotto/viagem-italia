@@ -1,28 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- DADOS DA APLICAÇÃO ---
     // Dados da Tabela (extraídos do seu CSV)
     const tabelaData = [
-        { dia: '27/ago', cidade: 'Roma', pernoite: 'Airbnb Roma', transporte: 'Trem Leonardo Express (~32min) + Metrô (~5min)', logistica: 'Chegada FCO 19h. Validar bilhete do trem.', docs: [{ title: 'Passagens aéreas', url: 'https://drive.google.com/drive/folders/1re3HPoAN2P3VHYfBixblfbOZhKwdR19G?usp=drive_link' }] },
-        { dia: '28/ago', cidade: 'Roma (livre)', pernoite: 'Airbnb Roma', transporte: 'A pé / Metrô', logistica: 'Exploração do centro histórico.', docs: [] },
-        { dia: '29/ago', cidade: 'Roma (Vaticano)', pernoite: 'Airbnb Roma', transporte: 'A pé / Metrô', logistica: 'Saída 6:15h da Est. Barberini (Linha A) para Est. Ottaviano. Visita à Basílica às 7h e Museu às 8:30h.', docs: [{ title: 'Ticket Vaticano', url: 'https://drive.google.com/file/d/1NAFEO0dnMgH4Jxa_lyXXDmP0vE36LEV9/view?usp=drive_link' }] },
-        { dia: '30/ago', cidade: 'Roma (Coliseu)', pernoite: 'Airbnb Roma', transporte: 'A pé / Metrô', logistica: 'Saída 7:45h da Est. Barberini (Linha A), troca em Termini (Linha B) para Est. Colosseo. Visita às 8:30h.', docs: [{ title: 'Ticket Coliseu', url: 'https://drive.google.com/file/d/1fdzneLKZtdVQw1NHsmPqnL_2FStl9NE4/view?usp=drive_link' }] },
-        { dia: '31/ago', cidade: 'Roma-Bari-Monopoli', pernoite: 'Monopoli', transporte: 'Trem (8:00, ~4h22min) + Trem Regional (~30-40min)', logistica: 'Deixar malas no Bounce em Bari (fecha 20h), explorar a pé, depois pegar trem para Monopoli.', docs: [{ title: 'Trem Roma-Bari', url: 'https://drive.google.com/file/d/1GoP_vva4XKoTPc7Fgio-DPZTQzJOC6hl/view?usp=drive_link' }, { title: 'Hospedagem Monopoli', url: 'https://drive.google.com/file/d/1ly5_lF89kNnEYiPHuE_0dgqOvP7_pRRd/view?usp=drive_link' }, { title: 'Recibo Hospedagem', url: 'https://drive.google.com/file/d/1cpFOU01nTrF0oW0Ws6lPcR2XJYLMTuI8/view?usp=drive_link' }] },
-        { dia: '01/set', cidade: 'Monopoli & Polignano', pernoite: 'Monopoli', transporte: 'Trem Regional (~5-8min)', logistica: 'Dia sem carro. Consultar horários de trem.', docs: [] },
-        { dia: '02/set', cidade: 'Alberobello, Locorotondo & Ostuni', pernoite: 'Monopoli', transporte: 'Carro Alugado', logistica: 'Retirada do carro às 9h em Monopoli. Jantar em Ostuni.', docs: [{ title: 'Aluguel Hertz', url: 'https://drive.google.com/file/d/1Y3N-aXsv8inR0hREm7EiBZinF2LhQIbN/view?usp=drive_link' }, { title: 'Resumo Seguro AIG', url: 'https://drive.google.com/file/d/1kWPb_QsaEw4XVLHNEdFRp6kv9z56i3W6/view?usp=drive_link' }] },
-        { dia: '03/set', cidade: 'Lecce, G. della Poesia & Otranto', pernoite: 'Monopoli', transporte: 'Carro Alugado', logistica: 'Dia longo de estrada para o Salento. Pôr do sol em Otranto às 19:20h.', docs: [] },
-        { dia: '04/set', cidade: 'Monopoli → Matera', pernoite: 'Matera', transporte: 'Carro (~1h30min)', logistica: 'Dia de exploração em Matera. Acomodação na ZTL, estacionar antes.', docs: [{ title: 'Hospedagem Matera', url: 'https://drive.google.com/file/d/1IiZNTWcCJ982cKJbGb8Q2B1svhjB0xyo/view?usp=drive_link' }, { title: 'Recibo Hospedagem', url: 'https://drive.google.com/file/d/14o3rK1rbWIk71XDi9oWe3jgejkaosb45/view?usp=drive_link' }] },
-        { dia: '05/set', cidade: 'Matera, Pompeia & Amalfi', pernoite: 'Amalfi', transporte: 'Carro (Saída 8:30, ~3h) + Carro (~40min) + Balsa (18:10, 35min)', logistica: 'Visitar Pompeia por 4h (saída máx. 16:30). Devolver carro na Hertz em Salerno às 17:30h. Caminhar até o Molo Concordia para a balsa.', docs: [{ title: 'Ticket Pompeia', url: 'https://drive.google.com/file/d/1MAPMnaVy1f1uUKa3VCFcjgSbZzWcnC8z/view?usp=drive_link' }, { title: 'Balsa Salerno-Amalfi', url: 'https://drive.google.com/file/d/1YfPUDUlPFfc9hrxQdvotF0APr0rRWSDt/view?usp=drive_link' }, { title: 'Hospedagem Amalfi', url: 'https://drive.google.com/file/d/1sg9vTV6PW3-zqHNbH8t_Y1Hc-8OrIX_f/view?usp=drive_link' }, { title: 'Recibo Hospedagem', url: 'https://drive.google.com/file/d/10ENPjyINgvMxRFvgVh4chgXIzeBY2B0_/view?usp=drive_link' }] },
-        { dia: '06/set', cidade: 'Positano', pernoite: 'Amalfi', transporte: 'Balsa (~25min)', logistica: 'Passeio para Positano.', docs: [] },
-        { dia: '07/set', cidade: 'Amalfi & Ravello', pernoite: 'Amalfi', transporte: 'Ônibus (~30min)', logistica: 'Passeio para Ravello.', docs: [] },
-        { dia: '08/set', cidade: 'Amalfi (Dia Livre)', pernoite: 'Amalfi', transporte: 'Scooter (Opcional)', logistica: 'Dia livre.', docs: [] },
-        { dia: '09/set', cidade: 'Amalfi → Capri', pernoite: 'Capri', transporte: 'Balsa (8:54, ~50-60min)', logistica: 'Deixar malas no Bounce em Marina Grande.', docs: [{ title: 'Balsa Amalfi-Capri', url: 'https://drive.google.com/file/d/1Ouil8ujta3NPo1Q4n-BJsXDim3f3AnoI/view?usp=drive_link' }, { title: 'Bounce Confirmação', url: 'https://drive.google.com/file/d/1NkHDIVSbWeFI_Au-pzYl4WSaX-INxp5K/view?usp=drive_link' }, { title: 'Hospedagem Capri', url: 'https://drive.google.com/file/d/1OOA80tXifzjziSFt8vte8Y6Bawe6LJe9/view?usp=drive_link' }] },
-        { dia: '10/set', cidade: 'Capri → Roma', pernoite: 'Em trânsito', transporte: 'Balsa (13:45) + Metrô + Trem (16:25, ~1h30min)', logistica: 'Conexão em Nápoles. Chegada em Roma 17:55. Deixar malas no KiPoint (Termini). Jantar na Via del Corso (Metrô: Spagna). Pegar penúltimo L. Express (22:53) para o aeroporto.', docs: [{ title: 'Balsa Capri-Napoles', url: 'https://drive.google.com/file/d/1KmqMyhJlVWKKBLvkxhG8LM1H3UPTRv3C/view?usp=drive_link' }, { title: 'Trem Napoles-Roma', url: 'https://drive.google.com/file/d/1jkdkaHWqZszfB1S0gR5S8FHKsYljmfZY/view?usp=drive_link' }] },
-        { dia: '11/set', cidade: 'Roma (Aeroporto)', pernoite: '-', transporte: 'Voo (5:55)', logistica: 'Partida do Aeroporto FCO.', docs: [{ title: 'Passagens aereas', url: 'https://drive.google.com/drive/folders/1re3HPoAN2P3VHYfBixblfbOZhKwdR19G?usp=drive_link' }] }
+        { dia: '2025-08-27', cidade: 'Roma', pernoite: 'Airbnb Roma', transporte: 'Trem Leonardo Express (~32min) + Metrô (~5min)', logistica: 'Chegada FCO 19h. Validar bilhete do trem.', docs: [{ title: 'Passagens aéreas', url: 'https://drive.google.com/drive/folders/1re3HPoAN2P3VHYfBixblfbOZhKwdR19G?usp=drive_link' }] },
+        { dia: '2025-08-28', cidade: 'Roma (livre)', pernoite: 'Airbnb Roma', transporte: 'A pé / Metrô', logistica: 'Exploração do centro histórico.', docs: [] },
+        { dia: '2025-08-29', cidade: 'Roma (Vaticano)', pernoite: 'Airbnb Roma', transporte: 'A pé / Metrô', logistica: 'Saída 6:15h da Est. Barberini (Linha A) para Est. Ottaviano. Visita à Basílica às 7h e Museu às 8:30h.', docs: [{ title: 'Ticket Vaticano', url: 'https://drive.google.com/file/d/1NAFEO0dnMgH4Jxa_lyXXDmP0vE36LEV9/view?usp=drive_link' }] },
+        { dia: '2025-08-30', cidade: 'Roma (Coliseu)', pernoite: 'Airbnb Roma', transporte: 'A pé / Metrô', logistica: 'Saída 7:45h da Est. Barberini (Linha A), troca em Termini (Linha B) para Est. Colosseo. Visita às 8:30h.', docs: [{ title: 'Ticket Coliseu', url: 'https://drive.google.com/file/d/1fdzneLKZtdVQw1NHsmPqnL_2FStl9NE4/view?usp=drive_link' }] },
+        { dia: '2025-08-31', cidade: 'Roma-Bari-Monopoli', pernoite: 'Monopoli', transporte: 'Trem (8:00, ~4h22min) + Trem Regional (~30-40min)', logistica: 'Deixar malas no Bounce em Bari (fecha 20h), explorar a pé, depois pegar trem para Monopoli.', docs: [{ title: 'Trem Roma-Bari', url: 'https://drive.google.com/file/d/1GoP_vva4XKoTPc7Fgio-DPZTQzJOC6hl/view?usp=drive_link' }, { title: 'Hospedagem Monopoli', url: 'https://drive.google.com/file/d/1ly5_lF89kNnEYiPHuE_0dgqOvP7_pRRd/view?usp=drive_link' }, { title: 'Recibo Hospedagem', url: 'https://drive.google.com/file/d/1cpFOU01nTrF0oW0Ws6lPcR2XJYLMTuI8/view?usp=drive_link' }] },
+        { dia: '2025-09-01', cidade: 'Monopoli & Polignano', pernoite: 'Monopoli', transporte: 'Trem Regional (~5-8min)', logistica: 'Dia sem carro. Consultar horários de trem.', docs: [] },
+        { dia: '2025-09-02', cidade: 'Alberobello, Locorotondo & Ostuni', pernoite: 'Monopoli', transporte: 'Carro Alugado', logistica: 'Retirada do carro às 9h em Monopoli. Jantar em Ostuni.', docs: [{ title: 'Aluguel Hertz', url: 'https://drive.google.com/file/d/1Y3N-aXsv8inR0hREm7EiBZinF2LhQIbN/view?usp=drive_link' }, { title: 'Resumo Seguro AIG', url: 'https://drive.google.com/file/d/1kWPb_QsaEw4XVLHNEdFRp6kv9z56i3W6/view?usp=drive_link' }] },
+        { dia: '2025-09-03', cidade: 'Lecce, G. della Poesia & Otranto', pernoite: 'Monopoli', transporte: 'Carro Alugado', logistica: 'Dia longo de estrada para o Salento. Pôr do sol em Otranto às 19:20h.', docs: [] },
+        { dia: '2025-09-04', cidade: 'Monopoli → Matera', pernoite: 'Matera', transporte: 'Carro (~1h30min)', logistica: 'Dia de exploração em Matera. Acomodação na ZTL, estacionar antes.', docs: [{ title: 'Hospedagem Matera', url: 'https://drive.google.com/file/d/1IiZNTWcCJ982cKJbGb8Q2B1svhjB0xyo/view?usp=drive_link' }, { title: 'Recibo Hospedagem', url: 'https://drive.google.com/file/d/14o3rK1rbWIk71XDi9oWe3jgejkaosb45/view?usp=drive_link' }] },
+        { dia: '2025-09-05', cidade: 'Matera, Pompeia & Amalfi', pernoite: 'Amalfi', transporte: 'Carro (Saída 8:30, ~3h) + Carro (~40min) + Balsa (18:10, 35min)', logistica: 'Visitar Pompeia por 4h (saída máx. 16:30). Devolver carro na Hertz em Salerno às 17:30h. Caminhar até o Molo Concordia para a balsa.', docs: [{ title: 'Ticket Pompeia', url: 'https://drive.google.com/file/d/1MAPMnaVy1f1uUKa3VCFcjgSbZzWcnC8z/view?usp=drive_link' }, { title: 'Balsa Salerno-Amalfi', url: 'https://drive.google.com/file/d/1YfPUDUlPFfc9hrxQdvotF0APr0rRWSDt/view?usp=drive_link' }, { title: 'Hospedagem Amalfi', url: 'https://drive.google.com/file/d/1sg9vTV6PW3-zqHNbH8t_Y1Hc-8OrIX_f/view?usp=drive_link' }, { title: 'Recibo Hospedagem', url: 'https://drive.google.com/file/d/10ENPjyINgvMxRFvgVh4chgXIzeBY2B0_/view?usp=drive_link' }] },
+        { dia: '2025-09-06', cidade: 'Positano', pernoite: 'Amalfi', transporte: 'Balsa (~25min)', logistica: 'Passeio para Positano.', docs: [] },
+        { dia: '2025-09-07', cidade: 'Amalfi & Ravello', pernoite: 'Amalfi', transporte: 'Ônibus (~30min)', logistica: 'Passeio para Ravello.', docs: [] },
+        { dia: '2025-09-08', cidade: 'Amalfi (Dia Livre)', pernoite: 'Amalfi', transporte: 'Scooter (Opcional)', logistica: 'Dia livre.', docs: [] },
+        { dia: '2025-09-09', cidade: 'Amalfi → Capri', pernoite: 'Capri', transporte: 'Balsa (8:54, ~50-60min)', logistica: 'Deixar malas no Bounce em Marina Grande.', docs: [{ title: 'Balsa Amalfi-Capri', url: 'https://drive.google.com/file/d/1Ouil8ujta3NPo1Q4n-BJsXDim3f3AnoI/view?usp=drive_link' }, { title: 'Bounce Confirmação', url: 'https://drive.google.com/file/d/1NkHDIVSbWeFI_Au-pzYl4WSaX-INxp5K/view?usp=drive_link' }, { title: 'Hospedagem Capri', url: 'https://drive.google.com/file/d/1OOA80tXifzjziSFt8vte8Y6Bawe6LJe9/view?usp=drive_link' }] },
+        { dia: '2025-09-10', cidade: 'Capri → Roma', pernoite: 'Em trânsito', transporte: 'Balsa (13:45) + Metrô + Trem (16:25, ~1h30min)', logistica: 'Conexão em Nápoles. Chegada em Roma 17:55. Deixar malas no KiPoint (Termini). Jantar na Via del Corso (Metrô: Spagna). Pegar penúltimo L. Express (22:53) para o aeroporto.', docs: [{ title: 'Balsa Capri-Napoles', url: 'https://drive.google.com/file/d/1KmqMyhJlVWKKBLvkxhG8LM1H3UPTRv3C/view?usp=drive_link' }, { title: 'Trem Napoles-Roma', url: 'https://drive.google.com/file/d/1jkdkaHWqZszfB1S0gR5S8FHKsYljmfZY/view?usp=drive_link' }] },
+        { dia: '2025-09-11', cidade: 'Roma (Aeroporto)', pernoite: '-', transporte: 'Voo (5:55)', logistica: 'Partida do Aeroporto FCO.', docs: [{ title: 'Passagens aereas', url: 'https://drive.google.com/drive/folders/1re3HPoAN2P3VHYfBixblfbOZhKwdR19G?usp=drive_link' }] }
     ];
-
-    // Dados da Lista (extraídos do seu Word)
     const listaData = [
         {
-            title: 'Capítulo 1: CHEGADA E TRANSPORTE EM ROMA (27/08 a 30/08)',
+            title: '1. CHEGADA E TRANSPORTE EM ROMA (27/08 a 30/08)',
             content: `
                 <h4>1.1 Do Aeroporto FCO para o Airbnb (Via di Capo le Case, 54)</h4>
                 <p><strong>Opção Recomendada: Trem + Metrô (A mais rápida e eficiente)</strong></p>
@@ -75,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: 'Capítulo 2: DE ROMA À PUGLIA (31/08)',
+            title: '2. DE ROMA À PUGLIA (31/08)',
             content: `
                 <h4>De Roma para Bari e Monopoli</h4>
                 <p>🚆 <strong>Trem de Alta Velocidade:</strong></p>
@@ -97,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: "Capítulo 3: GUIA DA VIAGEM PELA PUGLIA",
+            title: "3. GUIA DA VIAGEM PELA PUGLIA",
             content: `
                 <h4>3.1 Dia 1 na Puglia (01/09): Polignano a Mare de Trem</h4>
                 <p><strong>Logística:</strong> Como o carro ainda não foi alugado, o dia é dedicado à exploração via trem regional, que é rápido e eficiente para este trajeto.</p>
@@ -134,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: "Capítulo 4: DE MONOPOLI PARA MATERA (04/09)",
+            title: "4. DE MONOPOLI PARA MATERA (04/09)",
             content: `
                 <h4>Início da exploração da Basilicata</h4>
                 <p>🚗 <strong>O Trajeto:</strong></p>
@@ -155,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: "Capítulo 5: DE MATERA PARA POMPEIA E AMALFI (05/09)",
+            title: "5. DE MATERA PARA POMPEIA E AMALFI (05/09)",
             content: `
                 <h4>O grande dia de travessia e história</h4>
                 <p>🚗 <strong>Trajeto Matera → Pompeia:</strong></p>
@@ -184,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: "Capítulo 6: LOGÍSTICA NA COSTA AMALFITANA (05/09 a 08/09)",
+            title: "6. LOGÍSTICA NA COSTA AMALFITANA (05/09 a 08/09)",
             content: `
                 <h4>Explorando a partir da base em Amalfi</h4>
                 <p>🚶 <strong>Chegada em Amalfi (05/09):</strong></p>
@@ -225,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: "Capítulo 7: CHEGADA E LOGÍSTICA NA ILHA DE CAPRI (09/09 E 10/09)",
+            title: "7. CHEGADA E LOGÍSTICA NA ILHA DE CAPRI (09/09 E 10/09)",
             content: `
                 <h4>Explorando a ilha com pernoite</h4>
                 <p>🚢 <strong>Trajeto Amalfi → Capri (09/09):</strong></p>
@@ -259,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: "Capítulo 8: SAÍDA DE CAPRI PARA ROMA (10/09)",
+            title: "8. SAÍDA DE CAPRI PARA ROMA (10/09)",
             content: `
                 <h4>Logística para o final da viagem</h4>
                 <p><strong>Horários Definidos (via Nápoles):</strong></p>
@@ -276,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: "Capítulo 9: ÚLTIMA NOITE E PARTIDA DE ROMA (10/09 E 11/09)",
+            title: "9. ÚLTIMA NOITE E PARTIDA DE ROMA (10/09 E 11/09)",
             content: `
                 <h4>Aproveitando as últimas horas e a espera no aeroporto</h4>
                 <p><strong>Chegada em Roma Termini:</strong> Ao chegar às 17:55, a primeira parada é o guarda-volumes.</p>
@@ -302,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: "Capítulo 10: Anexo - Guia para a Road Trip",
+            title: "10. Anexo - Guia para a Road Trip",
             content: `
                 <h4>10.1 Informações Essenciais para Dirigir</h4>
                 <p><strong>ZTL (Zona a Traffico Limitato):</strong> A regra mais importante. NUNCA ENTRE NUMA ZTL! São áreas restritas nos centros históricos. A sua acomodação em Monopoli está numa ZTL, pelo que é obrigatório contactar o anfitrião para registar a placa do carro para os dias em que estarão motorizados (chegada e partida da road trip).</p>
@@ -399,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         },
         {
-            title: "Capítulo 11: Endereços Relevantes",
+            title: "11. Endereços Relevantes",
             content: `
                 <p>🏠 <strong>Hospedagens:</strong></p>
                 <ul>
@@ -435,8 +434,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         }
     ];
-
-    // Dados do Mapa (extraídos do seu CSV)
     const mapaData = [
         { lat: 40.7494295, lng: 14.4806421, nome: "Pompei Parking Zeus", roteiro: "POMPEIA" },
         { lat: 40.7480109, lng: 14.4818724, nome: "Porta Marina - Via Villa dei Misteri 8", roteiro: "POMPEIA" },
@@ -616,28 +613,27 @@ document.addEventListener('DOMContentLoaded', () => {
         { lat: 40.5572702, lng: 14.2251246, nome: "Villa San Michele", roteiro: "CAPRI E ANACAPRI" },
         { lat: 40.5548181, lng: 14.2172916, nome: "Church San Michele", roteiro: "CAPRI E ANACAPRI" }
     ];
-
     // Mapeamento de Dia para Capítulo
     const diaParaCapitulo = {
-        '27/ago': 0, '28/ago': 0, '29/ago': 0, '30/ago': 0,
-        '31/ago': 1,
-        '01/set': 2, '02/set': 2, '03/set': 2,
-        '04/set': 3,
-        '05/set': 4,
-        '06/set': 5, '07/set': 5, '08/set': 5,
-        '09/set': 6,
-        '10/set': 7,
-        '11/set': 8
+        '27-08': 0, '28-08': 0, '29-08': 0, '30-08': 0,
+        '31-08': 1,
+        '01-09': 2, '02-09': 2, '03-09': 2,
+        '04-09': 3,
+        '05-09': 4,
+        '06-09': 5, '07-09': 5, '08-09': 5,
+        '09-09': 6,
+        '10-09': 7,
+        '11-09': 8
     };
 
-    // Elementos da Navegação
+    // --- ELEMENTOS DO DOM ---
     const btnTabela = document.getElementById('btn-tabela');
     const btnLista = document.getElementById('btn-lista');
     const btnMapa = document.getElementById('btn-mapa');
     const pages = document.querySelectorAll('.page');
     const navBtns = document.querySelectorAll('.nav-btn');
 
-    // Função para trocar de página
+    // --- NAVEGAÇÃO ENTRE PÁGINAS ---
     function switchPage(pageId) {
         pages.forEach(page => {
             page.classList.remove('active');
@@ -653,7 +649,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Event Listeners da Navegação
     btnTabela.addEventListener('click', () => switchPage('pagina-tabela'));
     btnLista.addEventListener('click', () => switchPage('pagina-lista'));
     btnMapa.addEventListener('click', () => switchPage('pagina-mapa'));
@@ -663,7 +658,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.querySelector('#pagina-tabela .table-container');
         const table = document.createElement('table');
         
-        // Cabeçalho
         const thead = document.createElement('thead');
         thead.innerHTML = `
             <tr>
@@ -677,15 +671,18 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         table.appendChild(thead);
 
-        // Corpo
         const tbody = document.createElement('tbody');
+        const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+        
         tabelaData.forEach(rowData => {
             const tr = document.createElement('tr');
             
-            // Formatar a data
-            const [ano, mes, dia] = rowData.dia.split('/');
-            const diaFormatado = `${dia}/${mes}`;
-            
+            // **CORREÇÃO 1: Formato da data**
+            const [ano, mesNum, diaNum] = rowData.dia.split('-');
+            const mesNome = meses[parseInt(mesNum, 10) - 1];
+            const diaFormatado = `${diaNum} ${mesNome}`;
+            const diaChave = `${diaNum}-${mesNum}`; // Chave para o mapeamento
+
             tr.innerHTML = `
                 <td>${diaFormatado}</td>
                 <td>${rowData.cidade}</td>
@@ -695,35 +692,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="docs-cell"></td>
             `;
 
-            // Adicionar links de documentos
             const docsCell = tr.querySelector('.docs-cell');
             rowData.docs.forEach(doc => {
                 const a = document.createElement('a');
                 a.href = doc.url;
                 a.textContent = doc.title;
-                a.target = '_blank'; // Abrir em nova aba
+                a.target = '_blank';
                 docsCell.appendChild(a);
                 docsCell.appendChild(document.createElement('br'));
             });
 
-            // Adicionar evento de clique para redirecionar para a lista
             tr.querySelectorAll('td:not(.docs-cell)').forEach(cell => {
                 cell.addEventListener('click', () => {
-                    const capituloIndex = diaParaCapitulo[rowData.dia];
+                    const capituloIndex = diaParaCapitulo[diaChave];
                     if (capituloIndex !== undefined) {
                         switchPage('pagina-lista');
-                        // Aguarda a transição da página para abrir o accordion
                         setTimeout(() => {
                             const allItems = document.querySelectorAll('#pagina-lista .accordion-item');
                             allItems.forEach((item, index) => {
                                 if (index === capituloIndex) {
-                                    item.classList.add('active');
-                                    const content = item.querySelector('.accordion-content');
-                                    content.style.maxHeight = content.scrollHeight + "px";
+                                    if (!item.classList.contains('active')) {
+                                        item.querySelector('.accordion-header').click();
+                                    }
                                     item.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 } else {
-                                    item.classList.remove('active');
-                                    item.querySelector('.accordion-content').style.maxHeight = null;
+                                    if (item.classList.contains('active')) {
+                                        item.classList.remove('active');
+                                        item.querySelector('.accordion-content').style.maxHeight = null;
+                                    }
                                 }
                             });
                         }, 100);
@@ -743,7 +739,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const item = document.createElement('div');
             item.classList.add('accordion-item');
             item.innerHTML = `
-                <div class="accordion-header">${itemData.title}</div>
+                <div class="accordion-header">
+                    <span>${itemData.title}</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
                 <div class="accordion-content">
                     <div class="accordion-content-inner">
                         ${itemData.content}
@@ -753,7 +752,6 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(item);
         });
 
-        // Event listener para o accordion
         const accordionItems = document.querySelectorAll('.accordion-item');
         accordionItems.forEach(item => {
             const header = item.querySelector('.accordion-header');
@@ -761,50 +759,37 @@ document.addEventListener('DOMContentLoaded', () => {
             header.addEventListener('click', () => {
                 const isActive = item.classList.contains('active');
                 
-                // Fecha todos os outros
+                // Fecha todos os outros para comportamento de "sanfona"
                 accordionItems.forEach(otherItem => {
-                    otherItem.classList.remove('active');
-                    otherItem.querySelector('.accordion-content').style.maxHeight = null;
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                        otherItem.querySelector('.accordion-content').style.maxHeight = null;
+                    }
                 });
 
-                // Abre ou fecha o item clicado
                 if (!isActive) {
                     item.classList.add('active');
                     content.style.maxHeight = content.scrollHeight + "px";
+                } else {
+                    item.classList.remove('active');
+                    content.style.maxHeight = null;
                 }
             });
         });
     }
 
     // --- LÓGICA DA PÁGINA MAPA ---
-    window.initMap = () => {
-        const map = new google.maps.Map(document.getElementById("map"), {
-            center: { lat: 41.9027835, lng: 12.4963655 }, // Roma como centro inicial
+    window.initMap = async () => {
+        const { Map } = await google.maps.importLibrary("maps");
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+        
+        const map = new Map(document.getElementById("map"), {
+            center: { lat: 41.9027835, lng: 12.4963655 }, // Roma
             zoom: 6,
+            mapId: 'GUIA_VIAGEM_ITALIA_STYLE', // ID para o estilo customizado
             mapTypeControl: false,
             streetViewControl: false,
             fullscreenControl: false,
-            styles: [ // Estilo sóbrio/elegante
-                { elementType: "geometry", stylers: [{ color: "#f5f5f5" }] },
-                { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-                { elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
-                { elementType: "labels.text.stroke", stylers: [{ color: "#f5f5f5" }] },
-                { featureType: "administrative.land_parcel", stylers: [{ visibility: "off" }] },
-                { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#bdbdbd" }] },
-                { featureType: "poi", elementType: "geometry", stylers: [{ color: "#eeeeee" }] },
-                { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-                { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#e5e5e5" }] },
-                { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
-                { featureType: "road", elementType: "geometry", stylers: [{ color: "#ffffff" }] },
-                { featureType: "road.arterial", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-                { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#dadada" }] },
-                { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
-                { featureType: "road.local", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
-                { featureType: "transit.line", elementType: "geometry", stylers: [{ color: "#e5e5e5" }] },
-                { featureType: "transit.station", elementType: "geometry", stylers: [{ color: "#eeeeee" }] },
-                { featureType: "water", elementType: "geometry", stylers: [{ color: "#c9c9c9" }] },
-                { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] }
-            ]
         });
 
         const directionsService = new google.maps.DirectionsService();
@@ -813,76 +798,71 @@ document.addEventListener('DOMContentLoaded', () => {
         const infoBox = document.getElementById('info-box');
         const infoTitle = document.getElementById('info-title');
         const infoContent = document.getElementById('info-content');
+        const infoLoader = document.getElementById('info-loader');
         const closeInfoBoxBtn = document.getElementById('close-info-box');
 
-        closeInfoBoxBtn.addEventListener('click', () => {
-            infoBox.classList.remove('show');
-        });
+        closeInfoBoxBtn.addEventListener('click', () => infoBox.classList.remove('show'));
 
-        // Agrupar pontos por roteiro
         const roteiros = mapaData.reduce((acc, ponto) => {
-            if (!acc[ponto.roteiro]) {
-                acc[ponto.roteiro] = [];
-            }
+            if (!acc[ponto.roteiro]) acc[ponto.roteiro] = [];
             acc[ponto.roteiro].push(ponto);
             return acc;
         }, {});
 
-        // Cores para as rotas
-        const routeColors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFA1", "#FFC300", "#C70039", "#900C3F", "#581845"];
+        const routeColors = ["#E74C3C", "#3498DB", "#2ECC71", "#F1C40F", "#9B59B6", "#1ABC9C", "#E67E22"];
         let colorIndex = 0;
 
         for (const nomeRoteiro in roteiros) {
             const pontos = roteiros[nomeRoteiro];
-            const waypoints = pontos.map(p => ({ location: new google.maps.LatLng(p.lat, p.lng), stopover: true }));
-            
-            const origin = waypoints.shift().location;
-            const destination = waypoints.pop()?.location || origin;
+            const currentColor = routeColors[colorIndex % routeColors.length];
 
-            // Adicionar marcadores
+            // Adicionar marcadores customizados
             pontos.forEach((ponto, index) => {
                 const isStartPoint = index === 0;
-                const marker = new google.maps.Marker({
+                
+                // Cria o ícone do marcador
+                const markerIcon = document.createElement('div');
+                markerIcon.className = 'marker';
+                markerIcon.style.setProperty('--marker-color', isStartPoint ? '#000000' : currentColor);
+                const icon = document.createElement('i');
+                icon.className = isStartPoint ? 'fa-solid fa-flag' : 'fa-solid fa-location-dot';
+                markerIcon.appendChild(icon);
+
+                const marker = new AdvancedMarkerElement({
                     position: { lat: ponto.lat, lng: ponto.lng },
                     map: map,
                     title: ponto.nome,
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: isStartPoint ? 8 : 6,
-                        fillColor: isStartPoint ? "#ff4500" : "#007bff", // Laranja para ponto de partida
-                        fillOpacity: 1,
-                        strokeWeight: 1,
-                        strokeColor: "#ffffff"
-                    }
+                    content: markerIcon
                 });
 
                 marker.addListener('click', () => {
                     infoTitle.textContent = ponto.nome;
-                    infoContent.textContent = "Carregando informações...";
+                    infoContent.innerHTML = '';
+                    infoLoader.style.display = 'block';
                     infoBox.classList.add('show');
-
-                    // Busca informações úteis do Google Places
+                    
                     const request = {
-                        query: ponto.nome,
-                        fields: ['name', 'formatted_address', 'rating', 'user_ratings_total', 'opening_hours'],
+                        query: `${ponto.nome}, ${nomeRoteiro.split(' - ')[0]}`,
+                        fields: ['place_id'],
                         locationBias: { lat: ponto.lat, lng: ponto.lng }
                     };
 
                     placesService.findPlaceFromQuery(request, (results, status) => {
                         if (status === google.maps.places.PlacesServiceStatus.OK && results && results[0]) {
-                            placesService.getDetails({ placeId: results[0].place_id, fields: ['website', 'formatted_phone_number', 'opening_hours'] }, (place, status) => {
-                                let content = `<strong>Endereço:</strong> ${place.formatted_address || 'Não disponível'}<br>`;
-                                if(place.rating) content += `<strong>Avaliação:</strong> ${place.rating} (${place.user_ratings_total} avaliações)<br>`;
-                                if(place.formatted_phone_number) content += `<strong>Telefone:</strong> ${place.formatted_phone_number}<br>`;
-                                if(place.website) content += `<strong>Website:</strong> <a href="${place.website}" target="_blank">Visitar</a><br>`;
-                                if(place.opening_hours) {
-                                    content += `<strong>Horário:</strong> ${place.opening_hours.isOpen() ? 'Aberto agora' : 'Fechado'}<br>`;
-                                    content += `<ul>${place.opening_hours.weekday_text.map(d => `<li>${d}</li>`).join('')}</ul>`;
+                            placesService.getDetails({ placeId: results[0].place_id, fields: ['name', 'formatted_address', 'website', 'rating', 'user_ratings_total', 'icon'] }, (place, detailStatus) => {
+                                infoLoader.style.display = 'none';
+                                if (detailStatus === google.maps.places.PlacesServiceStatus.OK && place) {
+                                    let contentHTML = `<p>${place.formatted_address || ''}</p>`;
+                                    if(place.rating) contentHTML += `<p><strong>Avaliação:</strong> ${place.rating} (${place.user_ratings_total || 0} reviews)</p>`;
+                                    if(place.website) contentHTML += `<p><a href="${place.website}" target="_blank">Visitar Website</a></p>`;
+                                    infoContent.innerHTML = contentHTML;
+                                } else {
+                                    infoContent.innerHTML = `<p>Não foi possível carregar os detalhes do local.</p>`;
                                 }
-                                infoContent.innerHTML = content;
                             });
                         } else {
-                            infoContent.textContent = "Informações detalhadas não encontradas.";
+                            infoLoader.style.display = 'none';
+                            infoContent.innerHTML = `<p>Informações detalhadas não encontradas no Google Places.</p>`;
                         }
                     });
                 });
@@ -890,19 +870,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Desenhar a rota
             if (pontos.length > 1) {
-                const directionsRenderer = new google.maps.DirectionsRenderer({
-                    suppressMarkers: true, // Não mostrar os marcadores padrão da rota
-                    polylineOptions: {
-                        strokeColor: routeColors[colorIndex % routeColors.length],
-                        strokeOpacity: 0.8,
-                        strokeWeight: 4
-                    }
-                });
-                directionsRenderer.setMap(map);
-
+                const waypoints = pontos.slice(1, -1).map(p => ({ location: new google.maps.LatLng(p.lat, p.lng), stopover: true }));
                 const request = {
-                    origin: origin,
-                    destination: destination,
+                    origin: { lat: pontos[0].lat, lng: pontos[0].lng },
+                    destination: { lat: pontos[pontos.length - 1].lat, lng: pontos[pontos.length - 1].lng },
                     waypoints: waypoints,
                     optimizeWaypoints: true,
                     travelMode: google.maps.TravelMode.DRIVING
@@ -910,17 +881,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 directionsService.route(request, (result, status) => {
                     if (status == 'OK') {
-                        directionsRenderer.setDirections(result);
+                        const directionsRenderer = new google.maps.DirectionsRenderer({
+                            suppressMarkers: true,
+                            map: map,
+                            directions: result,
+                            polylineOptions: {
+                                strokeColor: currentColor,
+                                strokeWeight: 5,
+                                strokeOpacity: 0.8
+                            }
+                        });
+                    } else if (status === 'OVER_QUERY_LIMIT') {
+                        console.warn(`Atingido o limite de queries para a rota: ${nomeRoteiro}. Tente novamente mais tarde.`);
                     } else {
                         console.error(`Erro ao traçar a rota para ${nomeRoteiro}: ${status}`);
                     }
                 });
-                colorIndex++;
             }
+            colorIndex++;
         }
     };
 
-    // Inicialização das páginas
+    // --- INICIALIZAÇÃO ---
     popularTabela();
     popularLista();
 });
