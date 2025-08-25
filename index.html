@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Viagem - Itália</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <button id="btn-tabela" class="nav-btn active"><i class="fas fa-table"></i> TABELA</button>
+            <button id="btn-lista" class="nav-btn"><i class="fas fa-list-ul"></i> LISTA</button>
+            <button id="btn-mapa" class="nav-btn"><i class="fas fa-map-marked-alt"></i> MAPA</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Página Tabela (Página Inicial) -->
+        <section id="pagina-tabela" class="page active">
+            <div class="table-container">
+                <!-- O conteúdo da tabela será inserido aqui pelo JavaScript -->
+            </div>
+        </section>
+
+        <!-- Página Lista -->
+        <section id="pagina-lista" class="page">
+            <div class="lista-container">
+                <!-- O conteúdo da lista expansível será inserido aqui pelo JavaScript -->
+            </div>
+        </section>
+
+        <!-- Página Mapa -->
+        <section id="pagina-mapa" class="page">
+            <div id="map"></div>
+            <div id="info-box" class="info-box">
+                <button id="close-info-box"><i class="fas fa-times"></i></button>
+                <h3 id="info-title"></h3>
+                <p id="info-content"></p>
+            </div>
+        </section>
+    </main>
+    
+    <script src="script.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_2WiI6H99Y5irc4eqzhkIm6P2xbHlAkQ&callback=initMap&libraries=places,routes"></script>
+</body>
+</html>
