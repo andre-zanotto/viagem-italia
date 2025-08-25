@@ -613,6 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { lat: 40.5572702, lng: 14.2251246, nome: "Villa San Michele", roteiro: "CAPRI E ANACAPRI" },
         { lat: 40.5548181, lng: 14.2172916, nome: "Church San Michele", roteiro: "CAPRI E ANACAPRI" }
     ];
+
     // Mapeamento de Dia para Capítulo
     const diaParaCapitulo = {
         '27-08': 0, '28-08': 0, '29-08': 0, '30-08': 0,
@@ -779,14 +780,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DA PÁGINA MAPA ---
-    window.initMap = async () => {
-        const { Map } = await google.maps.importLibrary("maps");
-        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-        
-        const map = new Map(document.getElementById("map"), {
+    window.initMap = () => {
+        // **CORREÇÃO 3: Simplificação da chamada da API e Estilo do Mapa**
+        const map = new google.maps.Map(document.getElementById("map"), {
             center: { lat: 41.9027835, lng: 12.4963655 }, // Roma
             zoom: 6,
-            mapId: 'GUIA_VIAGEM_ITALIA_STYLE', // ID para o estilo customizado
+            // O mapId foi removido. O estilo é aplicado diretamente.
+            styles: [
+                { "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }] },
+                { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
+                { "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] },
+                { "elementType": "labels.text.stroke", "stylers": [{ "color": "#f5f5f5" }] },
+                { "featureType": "administrative.land_parcel", "elementType": "labels.text.fill", "stylers": [{ "color": "#bdbdbd" }] },
+                { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] },
+                { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
+                { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] },
+                { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] },
+                { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }] },
+                { "featureType": "road.arterial", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
+                { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#dadada" }] },
+                { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] },
+                { "featureType": "road.local", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] },
+                { "featureType": "transit.line", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] },
+                { "featureType": "transit.station", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] },
+                { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#c9c9c9" }] },
+                { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] }
+            ],
             mapTypeControl: false,
             streetViewControl: false,
             fullscreenControl: false,
@@ -820,19 +839,19 @@ document.addEventListener('DOMContentLoaded', () => {
             pontos.forEach((ponto, index) => {
                 const isStartPoint = index === 0;
                 
-                // Cria o ícone do marcador
-                const markerIcon = document.createElement('div');
-                markerIcon.className = 'marker';
-                markerIcon.style.setProperty('--marker-color', isStartPoint ? '#000000' : currentColor);
-                const icon = document.createElement('i');
-                icon.className = isStartPoint ? 'fa-solid fa-flag' : 'fa-solid fa-location-dot';
-                markerIcon.appendChild(icon);
-
-                const marker = new AdvancedMarkerElement({
+                const marker = new google.maps.Marker({
                     position: { lat: ponto.lat, lng: ponto.lng },
                     map: map,
                     title: ponto.nome,
-                    content: markerIcon
+                    icon: {
+                        path: isStartPoint ? 'M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z' : google.maps.SymbolPath.CIRCLE, // Ícone de bandeira para início
+                        fillColor: isStartPoint ? '#000000' : currentColor,
+                        fillOpacity: 1,
+                        strokeColor: '#fff',
+                        strokeWeight: 2,
+                        scale: isStartPoint ? 8 : 6,
+                        anchor: new google.maps.Point(12, 24)
+                    }
                 });
 
                 marker.addListener('click', () => {
@@ -843,18 +862,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const request = {
                         query: `${ponto.nome}, ${nomeRoteiro.split(' - ')[0]}`,
-                        fields: ['place_id'],
-                        locationBias: { lat: ponto.lat, lng: ponto.lng }
+                        fields: ['place_id', 'name', 'formatted_address'],
                     };
 
                     placesService.findPlaceFromQuery(request, (results, status) => {
                         if (status === google.maps.places.PlacesServiceStatus.OK && results && results[0]) {
-                            placesService.getDetails({ placeId: results[0].place_id, fields: ['name', 'formatted_address', 'website', 'rating', 'user_ratings_total', 'icon'] }, (place, detailStatus) => {
+                            placesService.getDetails({ placeId: results[0].place_id, fields: ['name', 'formatted_address', 'website', 'rating', 'user_ratings_total'] }, (place, detailStatus) => {
                                 infoLoader.style.display = 'none';
                                 if (detailStatus === google.maps.places.PlacesServiceStatus.OK && place) {
-                                    let contentHTML = `<p>${place.formatted_address || ''}</p>`;
-                                    if(place.rating) contentHTML += `<p><strong>Avaliação:</strong> ${place.rating} (${place.user_ratings_total || 0} reviews)</p>`;
-                                    if(place.website) contentHTML += `<p><a href="${place.website}" target="_blank">Visitar Website</a></p>`;
+                                    let contentHTML = `<p><strong>📍 Endereço:</strong> ${place.formatted_address || 'Não disponível'}</p>`;
+                                    if(place.rating) contentHTML += `<p><strong>⭐ Avaliação:</strong> ${place.rating} (${place.user_ratings_total || 0} reviews)</p>`;
+                                    if(place.website) contentHTML += `<p><strong>🌐 Website:</strong> <a href="${place.website}" target="_blank">Visitar</a></p>`;
                                     infoContent.innerHTML = contentHTML;
                                 } else {
                                     infoContent.innerHTML = `<p>Não foi possível carregar os detalhes do local.</p>`;
