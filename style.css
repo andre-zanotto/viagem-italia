@@ -231,10 +231,3 @@ td a:hover {
     padding: 0; /* Remove o padding para o iframe preencher tudo */
     overflow: hidden; /* Garante que o iframe não crie barras de rolagem extras */
 }
-
-/* O iframe preencherá o container #pagina-mapa */
-#pagina-mapa iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
