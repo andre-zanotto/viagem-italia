@@ -34,21 +34,44 @@
             font-size: 14px;
             font-weight: 500;
         }
-        /* Estilização da barra de rolagem da lista de locais */
-        #location-list::-webkit-scrollbar {
-            width: 6px;
+        /* Estilo para o ícone de marcador numerado */
+        .number-icon {
+            background-color: #3b82f6; /* Azul do Tailwind (blue-500) */
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            font-size: 14px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-        #location-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+        /* Estilos para a lista retrátil */
+        #location-list-container {
+            max-height: 300px; /* Altura máxima quando expandido */
+            overflow-y: auto;
+            transition: max-height 0.5s ease-in-out, margin-top 0.5s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 1;
         }
-        #location-list::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
+        #location-list-container.collapsed {
+            max-height: 0;
+            margin-top: 0 !important;
+            opacity: 0;
+            overflow-y: hidden;
         }
-        #location-list::-webkit-scrollbar-thumb:hover {
-            background: #555;
+        #list-toggle-icon {
+            transition: transform 0.5s ease-in-out;
         }
+        .collapsed #list-toggle-icon {
+            transform: rotate(-180deg);
+        }
+        /* Estilização da barra de rolagem */
+        #location-list-container::-webkit-scrollbar { width: 6px; }
+        #location-list-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        #location-list-container::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        #location-list-container::-webkit-scrollbar-thumb:hover { background: #555; }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -58,20 +81,26 @@
         <!-- O elemento onde o mapa será renderizado -->
         <div id="map"></div>
 
-        <!-- Controles do mapa (seleção de roteiro e lista de locais) -->
-        <div class="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-gray-200 max-w-xs w-full flex flex-col space-y-4">
+        <!-- Controles do mapa com lista retrátil -->
+        <div id="controls-container" class="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-gray-200 max-w-xs w-full flex flex-col space-y-4">
             <!-- Seletor de Roteiro -->
             <div>
                 <label for="roteiro-select" class="block text-sm font-bold text-gray-800 mb-2">Escolha o Roteiro:</label>
                 <select id="roteiro-select" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                    <!-- As opções serão preenchidas via JavaScript -->
+                    <!-- Opções preenchidas via JavaScript -->
                 </select>
             </div>
-            <!-- Lista de Locais -->
+            <!-- Cabeçalho da Lista (Botão de Toggle) -->
+            <div id="list-toggle" class="flex justify-between items-center cursor-pointer border-t pt-3">
+                <h3 class="text-sm font-bold text-gray-800">Locais no Roteiro:</h3>
+                <svg id="list-toggle-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+                </svg>
+            </div>
+            <!-- Container da Lista de Locais -->
             <div id="location-list-container">
-                <h3 class="text-sm font-bold text-gray-800 mb-2 border-t pt-3">Locais no Roteiro:</h3>
-                <ul id="location-list" class="max-h-64 overflow-y-auto space-y-1 pr-2">
-                    <!-- Os itens da lista serão gerados dinamicamente aqui -->
+                <ul id="location-list" class="space-y-1 pr-2">
+                    <!-- Itens da lista gerados dinamicamente -->
                 </ul>
             </div>
         </div>
@@ -82,8 +111,8 @@
         const locationsData = {
             "POMPEIA": [
                 { name: "Pompei Parking Zeus", coords: [40.7491, 14.4822] },
-                { name: "Porta Marina - Via Villa dei Misteri 8", coords: [40.7483, 14.4826] },
-                { name: "Temple of Venus in Pompeii", coords: [40.7475, 14.4835] },
+                { name: "Porta Marina", coords: [40.7483, 14.4826] },
+                { name: "Temple of Venus", coords: [40.7475, 14.4835] },
                 { name: "Santuario di Apollo", coords: [40.7492, 14.4842] },
                 { name: "Fórum de Pompeia", coords: [40.7499, 14.4856] },
                 { name: "Basilica", coords: [40.7486, 14.4846] },
@@ -91,28 +120,28 @@
                 { name: "Granaries of the Forum", coords: [40.7501, 14.4866] },
                 { name: "Teatro de Pompeia", coords: [40.7477, 14.4878] },
                 { name: "Teatro Pequeno", coords: [40.7473, 14.4883] },
-                { name: "Quadriporticus of the theatres", coords: [40.7472, 14.4873] },
+                { name: "Quadriporticus", coords: [40.7472, 14.4873] },
                 { name: "Terme Stabiane", coords: [40.7478, 14.4862] },
                 { name: "Lupanar", coords: [40.7491, 14.4882] },
                 { name: "Casa do Fauno", coords: [40.7506, 14.4874] },
                 { name: "Casa do Poeta Trágico", coords: [40.7501, 14.4860] },
-                { name: "Anfiteatro de Pompeia", coords: [40.7516, 14.4952] },
+                { name: "Anfiteatro", coords: [40.7516, 14.4952] },
                 { name: "Palestra Grande", coords: [40.7510, 14.4940] },
                 { name: "Villa dos Mistérios", coords: [40.7538, 14.4800] }
             ],
             "MATERA": [
                 { name: "Via Bruno Buozzi 5", coords: [40.6648, 16.6105] },
                 { name: "Parcheggio Via Lucana", coords: [40.6688, 16.6062] },
-                { name: "Piazza San Pietro Caveoso", coords: [40.6635, 16.6115] },
-                { name: "Church of Saint Mary of Idris", coords: [40.6638, 16.6112] },
-                { name: "Casa Grotta nei Sassi di Matera", coords: [40.6644, 16.6111] },
-                { name: "Cathedral of Maria Santissima of the Bruna & Sant'Eustachio", coords: [40.6675, 16.6110] },
+                { name: "Piazza S. Pietro Caveoso", coords: [40.6635, 16.6115] },
+                { name: "Church of S. Mary of Idris", coords: [40.6638, 16.6112] },
+                { name: "Casa Grotta", coords: [40.6644, 16.6111] },
+                { name: "Catedral", coords: [40.6675, 16.6110] },
                 { name: "Via D'Addozio", coords: [40.6680, 16.6120] },
                 { name: "Via Fiorentini", coords: [40.6670, 16.6125] },
                 { name: "Via delle Beccherie", coords: [40.6663, 16.6091] },
                 { name: "Palombaro lungo", coords: [40.6660, 16.6078] },
-                { name: "Belvedere Luigi Guerricchio (Belvedere dei Tre Archi)", coords: [40.6655, 16.6118] },
-                { name: "Belvedere di Piazza Giovanni Pascoli", coords: [40.6645, 16.6075] },
+                { name: "Belvedere L. Guerricchio", coords: [40.6655, 16.6118] },
+                { name: "Belvedere Pza. Pascoli", coords: [40.6645, 16.6075] },
                 { name: "Baccanti", coords: [40.6640, 16.6110] },
                 { name: "Belvedere Murgia Timone", coords: [40.6638, 16.6173] }
             ],
@@ -120,18 +149,18 @@
                 { name: "Via di Capo le Case 54", coords: [41.9038, 12.4848] },
                 { name: "Fontana di Trevi", coords: [41.9009, 12.4833] },
                 { name: "Panteão", coords: [41.8986, 12.4768] },
-                { name: "Basílica de Santa Maria Sobre Minerva", coords: [41.8979, 12.4774] },
-                { name: "Igreja de São Luís dos Franceses", coords: [41.8996, 12.4744] },
+                { name: "Sta. Maria Sobre Minerva", coords: [41.8979, 12.4774] },
+                { name: "S. Luís dos Franceses", coords: [41.8996, 12.4744] },
                 { name: "Piazza Navona", coords: [41.8992, 12.4731] },
-                { name: "Sant'Andrea della Valle", coords: [41.8958, 12.4740] },
+                { name: "S. Andrea della Valle", coords: [41.8958, 12.4740] },
                 { name: "Campo de' Fiori", coords: [41.8956, 12.4725] },
                 { name: "Largo di Torre Argentina", coords: [41.8955, 12.4763] },
-                { name: "Igreja de Santo Inácio de Loyola", coords: [41.8991, 12.4797] },
+                { name: "Sto. Inácio de Loyola", coords: [41.8991, 12.4797] },
                 { name: "Galleria Sciarra", coords: [41.9011, 12.4820] },
                 { name: "Via del Corso", coords: [41.902, 12.480] },
                 { name: "Piazza del Popolo", coords: [41.9108, 12.4765] },
-                { name: "Igreja de Nossa Senhora da Vitória", coords: [41.9042, 12.4925] },
-                { name: "Santa Maria degli Angeli e dei Martiri", coords: [41.9032, 12.4983] }
+                { name: "N. Sra. da Vitória", coords: [41.9042, 12.4925] },
+                { name: "Sta. Maria degli Angeli", coords: [41.9032, 12.4983] }
             ],
             "ROMA - DIA 2": [
                 { name: "Via di Capo le Case 54", coords: [41.9038, 12.4848] },
@@ -143,25 +172,24 @@
                 { name: "Castelo Sant'Angelo", coords: [41.9030, 12.4663] },
                 { name: "Ponte Sant'Angelo", coords: [41.9019, 12.4665] },
                 { name: "Janículo", coords: [41.8919, 12.4628] },
-                { name: "Basílica de Santa Maria em Trastevere", coords: [41.8897, 12.4697] }
+                { name: "Sta. Maria em Trastevere", coords: [41.8897, 12.4697] }
             ],
             "ROMA - DIA 3": [
                 { name: "Via di Capo le Case 54", coords: [41.9038, 12.4848] },
                 { name: "Barberini", coords: [41.9032, 12.4870] },
-                { name: "Colosseo", coords: [41.8906, 12.4923] },
                 { name: "Coliseu", coords: [41.8902, 12.4922] },
                 { name: "Fórum Romano", coords: [41.8925, 12.4853] },
                 { name: "Monte Palatino", coords: [41.8895, 12.4868] },
                 { name: "Giardino degli Aranci", coords: [41.8856, 12.4800] },
                 { name: "Bocca della Verità", coords: [41.8882, 12.4815] },
-                { name: "Santa Maria in Cosmedin", coords: [41.8883, 12.4814] },
+                { name: "Sta. Maria in Cosmedin", coords: [41.8883, 12.4814] },
                 { name: "Portico d'Ottavia", coords: [41.8931, 12.4780] },
-                { name: "Monumento a Vítor Emanuel II da Itália", coords: [41.8948, 12.4830] },
-                { name: "Santa Maria in Aracoeli", coords: [41.8939, 12.4828] },
-                { name: "Basílica de São Pedro in Vincoli", coords: [41.8938, 12.4947] },
-                { name: "Basílica de Santa Maria Maggiore", coords: [41.8976, 12.4988] },
+                { name: "Monumento Vítor Emanuel II", coords: [41.8948, 12.4830] },
+                { name: "Sta. Maria in Aracoeli", coords: [41.8939, 12.4828] },
+                { name: "S. Pedro in Vincoli", coords: [41.8938, 12.4947] },
+                { name: "Sta. Maria Maggiore", coords: [41.8976, 12.4988] },
                 { name: "Basílica de São Clemente", coords: [41.8894, 12.4975] },
-                { name: "Arquibasílica de São João de Latrão", coords: [41.8862, 12.5057] }
+                { name: "S. João de Latrão", coords: [41.8862, 12.5057] }
             ],
             "BARI": [
                 { name: "Bari Centrale", coords: [41.1186, 16.8700] },
@@ -169,53 +197,53 @@
                 { name: "Piazza del Ferrarese", coords: [41.1278, 16.8708] },
                 { name: "Piazza Mercantile", coords: [41.1287, 16.8703] },
                 { name: "Basilica San Nicola", coords: [41.1306, 16.8688] },
-                { name: "Direzione regionale Musei", coords: [41.1290, 16.8670] },
-                { name: "Basílica Catedral Metropolitana Primarcial de São Sabino", coords: [41.1293, 16.8682] },
-                { name: "Nunzia Pasta Lady extraordinaire of Bari Vecchia", coords: [41.1285, 16.8665] }
+                { name: "Direzione Musei", coords: [41.1290, 16.8670] },
+                { name: "Catedral de São Sabino", coords: [41.1293, 16.8682] },
+                { name: "Nunzia Pasta Lady", coords: [41.1285, 16.8665] }
             ],
             "MONOPOLI": [
                 { name: "Via Giovanni Pepe 7", coords: [40.9525, 17.3010] },
-                { name: "Piazza Giuseppe Garibaldi", coords: [40.9540, 17.3015] },
+                { name: "Piazza Garibaldi", coords: [40.9540, 17.3015] },
                 { name: "Porto antico", coords: [40.9548, 17.3016] },
                 { name: "Castello Carlo V", coords: [40.9566, 17.3025] },
                 { name: "Lungomare Santa Maria", coords: [40.9555, 17.3035] },
                 { name: "Cala Porta Vecchia", coords: [40.9546, 17.3046] },
-                { name: "Cattedrale Maria Santissima della Madia", coords: [40.9528, 17.3035] },
+                { name: "Cattedrale della Madia", coords: [40.9528, 17.3035] },
                 { name: "Piazza Vittorio Emanuele II", coords: [40.9515, 17.3000] }
             ],
             "POLIGANO A MARE": [
-                { name: "Estação Polignano A Mare", coords: [40.9940, 17.2190] },
+                { name: "Estação", coords: [40.9940, 17.2190] },
                 { name: "Ponte Borbonico", coords: [40.9958, 17.2170] },
                 { name: "Lama Monachile", coords: [40.9961, 17.2173] },
-                { name: "Monumento a Domenico Modugno", coords: [40.9968, 17.2178] },
-                { name: "Pendma Chiatt (Pietra Piatta)", coords: [40.9972, 17.2185] },
-                { name: "Belvedere Terrazza Santo Stefano", coords: [40.9951, 17.2191] },
-                { name: "Grotta Ardito delle Caldaie", coords: [40.9945, 17.2200] },
+                { name: "Monumento D. Modugno", coords: [40.9968, 17.2178] },
+                { name: "Pietra Piatta", coords: [40.9972, 17.2185] },
+                { name: "Terrazza Santo Stefano", coords: [40.9951, 17.2191] },
+                { name: "Grotta Ardito", coords: [40.9945, 17.2200] },
                 { name: "Grotticella Sella", coords: [40.9940, 17.2210] }
             ],
             "ALBEROBELLO": [
                 { name: "Rione Monti", coords: [40.7828, 17.2359] },
-                { name: "Chiesa Parrocchiale di Sant'Antonio da Padova – Chiesa a Trullo", coords: [40.7818, 17.2355] },
+                { name: "Chiesa a Trullo", coords: [40.7818, 17.2355] },
                 { name: "Trullo Siamese", coords: [40.7825, 17.2365] },
                 { name: "Piazza Plebiscito", coords: [40.7840, 17.2380] },
                 { name: "Rione Aia Piccola", coords: [40.7820, 17.2401] },
-                { name: "Territory Museum House Pezzolla", coords: [40.7835, 17.2395] },
+                { name: "Museum House Pezzolla", coords: [40.7835, 17.2395] },
                 { name: "Casa D'Amore", coords: [40.7845, 17.2385] },
                 { name: "Trullo Sovrano", coords: [40.7853, 17.2369] }
             ],
             "LOCOROTONDO": [
-                { name: "Chiesa Rettoria Madonna della Greca", coords: [40.7560, 17.3265] },
+                { name: "Madonna della Greca", coords: [40.7560, 17.3265] },
                 { name: "Palazzo Morelli", coords: [40.7550, 17.3275] },
                 { name: "Piazza Vittorio Emanuele", coords: [40.7548, 17.3270] },
-                { name: "Church of Saint George Martyr", coords: [40.7554, 17.3273] },
+                { name: "S. George Martyr", coords: [40.7554, 17.3273] },
                 { name: "Via Nardelli", coords: [40.7540, 17.3280] },
-                { name: "Villa Comunale “Giuseppe Garibaldi”", coords: [40.7535, 17.3290] },
-                { name: "Punto Panoramico Locorotondo", coords: [40.7533, 17.3289] }
+                { name: "Villa Comunale", coords: [40.7535, 17.3290] },
+                { name: "Punto Panoramico", coords: [40.7533, 17.3289] }
             ],
             "OSTUNI": [
                 { name: "Piazza della Libertà", coords: [40.7292, 17.5781] },
                 { name: "Arco Scoppa", coords: [40.7312, 17.5771] },
-                { name: "Duomo di Santa Maria Assunta", coords: [40.7314, 17.5772] },
+                { name: "Duomo", coords: [40.7314, 17.5772] },
                 { name: "Porta San Demetrio", coords: [40.7320, 17.5790] }
             ],
             "LECCE": [
@@ -223,17 +251,17 @@
                 { name: "Teatro Romano", coords: [40.3523, 18.1715] },
                 { name: "Palazzo Arcivescovile", coords: [40.3521, 18.1695] },
                 { name: "Piazza Sant'Oronzo", coords: [40.3528, 18.1722] },
-                { name: "Anfiteatro Romano di Lecce", coords: [40.3526, 18.1724] },
-                { name: "Castello Carlo V di Lecce", coords: [40.3525, 18.1745] },
+                { name: "Anfiteatro Romano", coords: [40.3526, 18.1724] },
+                { name: "Castello Carlo V", coords: [40.3525, 18.1745] },
                 { name: "Basílica da Santa Cruz", coords: [40.3546, 18.1728] },
-                { name: "Giuseppe Garibaldi Public Gardens", coords: [40.3560, 18.1700] }
+                { name: "Giardini Garibaldi", coords: [40.3560, 18.1700] }
             ],
             "OTRANTO": [
                 { name: "Lungomare degli Eroi", coords: [40.1462, 18.4907] },
                 { name: "Alphonse Tower", coords: [40.1470, 18.4900] },
                 { name: "Corso Garibaldi", coords: [40.1455, 18.4910] },
-                { name: "Cattedrale di Santa Maria Annunziata", coords: [40.1450, 18.4918] },
-                { name: "Aragonese Castle of Otranto", coords: [40.1440, 18.4930] }
+                { name: "Cattedrale", coords: [40.1450, 18.4918] },
+                { name: "Castelo Aragonês", coords: [40.1440, 18.4930] }
             ],
             "TORRE DELL'ORSO": [
                 { name: "Cave of Poetry", coords: [40.2880, 18.4285] },
@@ -242,8 +270,8 @@
                 { name: "Faraglioni di Sant'Andrea", coords: [40.2620, 18.4450] }
             ],
             "POSITANO": [
-                { name: "Spiaggia di Positano Marina Grande", coords: [40.6276, 14.4856] },
-                { name: "Chiesa di Santa Maria Assunta", coords: [40.6280, 14.4859] },
+                { name: "Spiaggia Grande", coords: [40.6276, 14.4856] },
+                { name: "Chiesa Sta. Maria Assunta", coords: [40.6280, 14.4859] },
                 { name: "Via dei Mulini", coords: [40.6290, 14.4865] },
                 { name: "Via Cristoforo Colombo", coords: [40.6270, 14.4880] },
                 { name: "Viale Pasitea", coords: [40.6285, 14.4840] },
@@ -255,14 +283,14 @@
                 { name: "Marina Grande", coords: [40.6325, 14.6020] },
                 { name: "Piazza Duomo", coords: [40.6342, 14.6025] },
                 { name: "Catedral de Amalfi", coords: [40.6340, 14.6027] },
-                { name: "La Valle delle Ferriere", coords: [40.6401, 14.6042] },
+                { name: "Valle delle Ferriere", coords: [40.6401, 14.6042] },
                 { name: "Torre dello Ziro", coords: [40.6370, 14.6110] }
             ],
             "RAVELLO": [
                 { name: "Piazza Duomo", coords: [40.6492, 14.6121] },
-                { name: "Duomo di ravello", coords: [40.6493, 14.6122] },
+                { name: "Duomo di Ravello", coords: [40.6493, 14.6122] },
                 { name: "Villa Rufolo", coords: [40.6495, 14.6127] },
-                { name: "Giardini Principessa di Piemonte", coords: [40.6488, 14.6120] },
+                { name: "Giardini Principessa", coords: [40.6488, 14.6120] },
                 { name: "Oscar Niemeyer Auditorium", coords: [40.6480, 14.6090] },
                 { name: "Villa Cimbrone", coords: [40.6461, 14.6151] },
                 { name: "Terrazza dell'Infinito", coords: [40.6458, 14.6153] }
@@ -298,7 +326,8 @@
         };
 
         // --- INICIALIZAÇÃO DO MAPA ---
-        const map = L.map('map').setView([41.9, 12.5], 6);
+        const map = L.map('map', { zoomControl: false }).setView([41.9, 12.5], 6);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -308,49 +337,64 @@
 
         // --- LÓGICA DE CONTROLE ---
         const selectElement = document.getElementById('roteiro-select');
+        const listContainer = document.getElementById('location-list-container');
         const listElement = document.getElementById('location-list');
-        let currentMarkers = {}; // Usar um objeto para mapear nomes a marcadores
+        const listToggle = document.getElementById('list-toggle');
+        const controlsContainer = document.getElementById('controls-container');
+        let currentMarkers = {};
+
+        // Lógica para recolher/expandir a lista
+        listToggle.addEventListener('click', () => {
+            listContainer.classList.toggle('collapsed');
+            controlsContainer.classList.toggle('collapsed');
+        });
 
         function displayRoute(routeName) {
-            // 1. Limpa os marcadores e a lista anteriores
+            // Limpa marcadores e lista anteriores
             Object.values(currentMarkers).forEach(marker => map.removeLayer(marker));
             currentMarkers = {};
-            listElement.innerHTML = ''; // Limpa a lista de locais
+            listElement.innerHTML = '';
 
             const locations = locationsData[routeName];
             if (!locations || locations.length === 0) return;
 
             const bounds = []; 
 
-            // 2. Adiciona os novos marcadores e preenche a lista
-            locations.forEach(location => {
-                // Cria e adiciona o marcador ao mapa
-                const marker = L.marker(location.coords).addTo(map);
-                marker.bindPopup(`<b>${location.name}</b>`);
-                currentMarkers[location.name] = marker; // Armazena o marcador pelo nome
+            // Adiciona novos marcadores e preenche a lista
+            locations.forEach((location, index) => {
+                const orderNumber = index + 1;
+
+                const numberIcon = L.divIcon({
+                    className: 'number-icon',
+                    html: `<b>${orderNumber}</b>`,
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
+                });
+                
+                const marker = L.marker(location.coords, { icon: numberIcon }).addTo(map);
+                marker.bindPopup(`<b>${orderNumber}. ${location.name}</b>`);
+                currentMarkers[location.name] = marker; 
                 bounds.push(location.coords);
 
-                // Cria e adiciona o item à lista
                 const listItem = document.createElement('li');
-                listItem.textContent = location.name;
+                listItem.textContent = `${orderNumber}. ${location.name}`;
                 listItem.className = 'p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors text-sm text-gray-700';
                 
-                // Adiciona o evento de clique ao item da lista
                 listItem.addEventListener('click', () => {
-                    map.setView(location.coords, 17); // Centraliza e dá zoom no marcador
-                    marker.openPopup(); // Abre o popup do marcador
+                    map.setView(location.coords, 17);
+                    marker.openPopup();
                 });
 
                 listElement.appendChild(listItem);
             });
 
-            // 3. Ajusta o zoom do mapa para mostrar todos os marcadores
+            // Ajusta o zoom do mapa
             if (bounds.length > 0) {
-                map.fitBounds(bounds, { padding: [50, 50] });
+                map.fitBounds(bounds, { padding: [70, 70] });
             }
         }
 
-        // Preenche o menu <select> com os roteiros disponíveis
+        // Preenche o menu <select>
         Object.keys(locationsData).forEach(routeName => {
             const option = document.createElement('option');
             option.value = routeName;
@@ -358,12 +402,12 @@
             selectElement.appendChild(option);
         });
 
-        // Adiciona um listener para o evento de mudança no <select>
+        // Adiciona listener para o <select>
         selectElement.addEventListener('change', (event) => {
             displayRoute(event.target.value);
         });
 
-        // Exibe o primeiro roteiro da lista ao carregar a página
+        // Exibe o primeiro roteiro ao carregar
         const initialRoute = Object.keys(locationsData)[0];
         selectElement.value = initialRoute;
         displayRoute(initialRoute);
